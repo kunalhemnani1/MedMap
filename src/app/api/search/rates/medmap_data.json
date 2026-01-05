@@ -1,0 +1,269 @@
+{
+  "metadata": {
+    "project": "MedMap",
+    "version": "1.0",
+    "generated_at": "2026-01-05",
+    "description": "Aggregated healthcare rates for Delhi/NCR based on CGHS and AIIMS standards."
+  },
+  "sources": {
+    "CGHS_2025_Tier1": {
+      "description": "Standard rates for private empanelled hospitals in Tier 1 cities (Delhi/Mumbai).",
+      "currency": "INR",
+      "data": [
+        {
+          "cghs_code": "CN001",
+          "procedure_name": "Consultation OPD",
+          "rate_non_nabh": 350,
+          "rate_nabh": 350,
+          "rate_super_speciality": 350,
+          "category": "Consultation"
+        },
+        {
+          "cghs_code": "CN002",
+          "procedure_name": "Consultation for Inpatients",
+          "rate_non_nabh": 350,
+          "rate_nabh": 350,
+          "rate_super_speciality": 350,
+          "category": "Consultation"
+        },
+        {
+          "cghs_code": "LB001",
+          "procedure_name": "Urine Routine- pH, Specific Gravity, Sugar, Protein and Microscopy",
+          "rate_non_nabh": 85,
+          "rate_nabh": 100,
+          "rate_super_speciality": 100,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB007",
+          "procedure_name": "Haemoglobin (Hb)",
+          "rate_non_nabh": 43,
+          "rate_nabh": 50,
+          "rate_super_speciality": 50,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB012",
+          "procedure_name": "Complete Haemogram/CBC (Hb, RBC, TLC, DLC, Platelet, ESR)",
+          "rate_non_nabh": 255,
+          "rate_nabh": 300,
+          "rate_super_speciality": 300,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB023",
+          "procedure_name": "Bone Marrow Smear Examination with Iron Stain",
+          "rate_non_nabh": 680,
+          "rate_nabh": 800,
+          "rate_super_speciality": 800,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB055",
+          "procedure_name": "Blood Glucose Random / Fasting / PP",
+          "rate_non_nabh": 34,
+          "rate_nabh": 40,
+          "rate_super_speciality": 40,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB125",
+          "procedure_name": "Lipid Profile (Total Cholesterol, Triglycerides, LDL, HDL)",
+          "rate_non_nabh": 417,
+          "rate_nabh": 490,
+          "rate_super_speciality": 490,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "LB124",
+          "procedure_name": "Liver Function Test (LFT)",
+          "rate_non_nabh": 425,
+          "rate_nabh": 500,
+          "rate_super_speciality": 500,
+          "category": "Laboratory"
+        },
+        {
+          "cghs_code": "RI001",
+          "procedure_name": "2D Echocardiography",
+          "rate_non_nabh": 1254,
+          "rate_nabh": 1475,
+          "rate_super_speciality": 1475,
+          "category": "Radiology"
+        },
+        {
+          "cghs_code": "RI062",
+          "procedure_name": "CT Scan Head/Brain-Without Contrast",
+          "rate_non_nabh": 880,
+          "rate_nabh": 1035,
+          "rate_super_speciality": 1035,
+          "category": "Radiology"
+        },
+        {
+          "cghs_code": "RI089",
+          "procedure_name": "MRI Head/Brain Without Contrast",
+          "rate_non_nabh": 2338,
+          "rate_nabh": 2750,
+          "rate_super_speciality": 2750,
+          "category": "Radiology"
+        },
+        {
+          "cghs_code": "RI090",
+          "procedure_name": "MRI Head/Brain With Contrast",
+          "rate_non_nabh": 4250,
+          "rate_nabh": 5000,
+          "rate_super_speciality": 5000,
+          "category": "Radiology"
+        }
+      ]
+    },
+    "CGHS_Delhi_2024_Updates": {
+      "description": "Specific procedure rates updated in Feb 2024 for Delhi/NCR.",
+      "currency": "INR",
+      "data": [
+        {
+          "code": "3",
+          "procedure_name": "Dressings of wounds",
+          "rate_non_nabh": 255,
+          "rate_nabh": 300,
+          "remarks": "Revised 01.02.2024"
+        },
+        {
+          "code": "4",
+          "procedure_name": "Suturing of wounds with local anaesthesia",
+          "rate_non_nabh": 108,
+          "rate_nabh": 124,
+          "remarks": "Revised 01.02.2024"
+        },
+        {
+          "code": "5",
+          "procedure_name": "Aspiration Plural Effusion - Diagnostic",
+          "rate_non_nabh": 595,
+          "rate_nabh": 700,
+          "remarks": "Revised 01.02.2024"
+        },
+        {
+          "code": "14",
+          "procedure_name": "Phimosis Under LA",
+          "rate_non_nabh": 5100,
+          "rate_nabh": 6000,
+          "remarks": "Revised 01.02.2024"
+        },
+        {
+          "code": "38",
+          "procedure_name": "Corneal grafting-Penetrating keratoplasty",
+          "rate_non_nabh": 5750,
+          "rate_nabh": 6613,
+          "category": "Ophthalmology"
+        },
+        {
+          "code": "520",
+          "procedure_name": "Atrial Septal Defect (ASD) closure",
+          "rate_non_nabh": 84065,
+          "rate_nabh": 98900,
+          "category": "Cardiology"
+        },
+        {
+          "code": "544",
+          "procedure_name": "Balloon Coronary Angioplasty / PTCA / PCI with VCD (Excl. Stent)",
+          "rate_non_nabh": 78200,
+          "rate_nabh": 92000,
+          "category": "Cardiology"
+        },
+        {
+          "code": "1196",
+          "procedure_name": "Total Hip Replacement (THR)",
+          "rate_non_nabh": 79000,
+          "rate_nabh": 90850,
+          "category": "Orthopaedics"
+        },
+        {
+          "code": "1198",
+          "procedure_name": "Total Knee Joint Replacement (TKR)",
+          "rate_non_nabh": 110000,
+          "rate_nabh": 126500,
+          "category": "Orthopaedics"
+        }
+      ]
+    },
+    "AIIMS_Delhi_Rates": {
+      "description": "Subsidized rates for procedures at AIIMS (Govt Standard). Use for 'Low Cost' comparison.",
+      "currency": "INR",
+      "data": [
+        {
+          "procedure_name": "Abscess incision",
+          "rate": 250.00,
+          "category": "Dental/Surgery"
+        },
+        {
+          "procedure_name": "Extraction per tooth",
+          "rate": 25.00,
+          "category": "Dental"
+        },
+        {
+          "procedure_name": "Root canal treatment",
+          "rate": 250.00,
+          "category": "Dental"
+        },
+        {
+          "procedure_name": "Biopsy",
+          "rate": 250.00,
+          "category": "General Surgery"
+        },
+        {
+          "procedure_name": "Appendicectomy",
+          "rate": 2000.00,
+          "category": "General Surgery"
+        },
+        {
+          "procedure_name": "Hernia Repair (External)",
+          "rate": 1000.00,
+          "category": "General Surgery"
+        },
+        {
+          "procedure_name": "Thyroidectomy",
+          "rate": 5000.00,
+          "category": "General Surgery"
+        },
+        {
+          "procedure_name": "Normal Delivery",
+          "rate": 2000.00,
+          "category": "Obstetrics"
+        },
+        {
+          "procedure_name": "Caesarean Hysterectomy",
+          "rate": 2000.00,
+          "category": "Obstetrics"
+        },
+        {
+          "procedure_name": "Blood Sugar (Micro method)",
+          "rate": 50.00,
+          "category": "Investigation"
+        },
+        {
+          "procedure_name": "Lipid Profile (Cholesterol, Triglycerides etc.)",
+          "rate": 200.00,
+          "note": "Estimated sum of individual components",
+          "category": "Investigation"
+        },
+        {
+          "procedure_name": "Plain X-Ray (Chest/Abdomen/Skull)",
+          "rate_general_ward": 30.00,
+          "rate_private_ward": 50.00,
+          "category": "Radiology"
+        },
+        {
+          "procedure_name": "CT Scan Head (Without Contrast)",
+          "rate_general_ward": 750.00,
+          "rate_private_ward": 1000.00,
+          "category": "Radiology"
+        },
+        {
+          "procedure_name": "MRI Plain (OPD/Indoor)",
+          "rate_general_ward": 2500.00,
+          "rate_private_ward": 3000.00,
+          "category": "Radiology"
+        }
+      ]
+    }
+  }
+}
