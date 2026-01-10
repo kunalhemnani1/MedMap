@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect, Suspense, useMemo } from "react";
+import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import Breadcrumb from "@/components/layout/Breadcrumb";
 import FilterSidebar from "@/components/search/FilterSidebar";
 import SortDropdown, { SortOption } from "@/components/search/SortDropdown";
 import ViewToggle, { ViewMode } from "@/components/search/ViewToggle";
+import ReactMarkdown from "react-markdown";
 import HospitalCard from "@/components/cards/HospitalCard";
 import SkeletonCard from "@/components/shared/SkeletonCard";
 import EmptyState from "@/components/shared/EmptyState";
@@ -53,6 +54,10 @@ function SearchPageContent() {
   const [view, setView] = useState<ViewMode>("grid");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
+  // AI Insight State
+  const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
   const [results, setResults] = useState<Hospital[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -60,20 +65,29 @@ function SearchPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchResults = async (pageNum = 1) => {
+  const fetchResults = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({
-        query: query || "",
-        limit: "12",
-        page: String(pageNum),
-      });
+      const params = new URLSearchParams();
+      const q = searchParams.get("q");
+      const pageParam = searchParams.get("page") || "1";
+      const state = searchParams.get("state");
+      const district = searchParams.get("district");
+      const pincode = searchParams.get("pincode");
+
+      if (q) params.append("query", q);
+      params.append("page", pageParam);
+      params.append("limit", "12");
+      if (state) params.append("state", state);
+      if (district) params.append("district", district);
+      if (pincode) params.append("pincode", pincode);
+
       const res = await fetch(`/api/search?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch");
 
       const data: SearchResponse = await res.json();
-      setResults(data.results);
+      setResults(data.results || []);
       setPage(data.page);
       setTotalPages(data.totalPages || 1);
       setTotal(data.total);
@@ -83,24 +97,74 @@ function SearchPageContent() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [searchParams]);
 
+  // Main fetch effect for Search Results + AI Insight
   useEffect(() => {
-    fetchResults(1);
-  }, [query]);
+    // 1. Fetch Hospitals
+    fetchResults();
+
+    // 2. Fetch AI Insight
+    const fetchAiInsight = async () => {
+      const q = searchParams.get("q");
+      const district = searchParams.get("district");
+      const state = searchParams.get("state");
+      const pincode = searchParams.get("pincode");
+
+      if (!q && !district && !state && !pincode) {
+        setAiInsight(null);
+        return;
+      }
+
+      setIsAiLoading(true);
+      try {
+        const response = await fetch("/api/chat/hospital", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: "Summarize these search results for me.",
+            searchParams: {
+              query: q,
+              district,
+              state,
+              pincode,
+            }
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setAiInsight(data.text);
+        }
+      } catch (error) {
+        console.error("Failed to fetch AI insight", error);
+      } finally {
+        setIsAiLoading(false);
+      }
+    };
+
+    // Debounce AI fetch to save tokens
+    const timeoutId = setTimeout(fetchAiInsight, 500);
+    return () => clearTimeout(timeoutId);
+
+  }, [searchParams, fetchResults]);
+
+  // Handle page changes manually
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      // Update URL to trigger the main effect
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(newPage));
+      router.push(`/search?${params.toString()}`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const input = (e.target as HTMLFormElement).querySelector("input")?.value || "";
     setQuery(input);
     router.push(`/search?q=${encodeURIComponent(input)}`);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      fetchResults(newPage);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
   };
 
   const deriveMeta = (hospital: Hospital) => {
@@ -150,7 +214,7 @@ function SearchPageContent() {
       if (filters.distance !== "any" && meta.distance > Number(filters.distance)) return false;
       if (filters.insurance && !meta.hasInsurance) return false;
       if (filters.availability && !meta.isOpenNow) return false;
-      if (filters.categories.length && !filters.categories.some((c) => meta.categories.includes(c))) return false;
+      if (filters.categories.length && !filters.categories.some((c) => meta.categories.includes(c as any))) return false;
       if (filters.accreditation.length && !filters.accreditation.some((a) => meta.accreditation.includes(a))) return false;
       return true;
     });
@@ -209,6 +273,31 @@ function SearchPageContent() {
 
           {/* Results Area */}
           <main className="flex-1 min-w-0">
+            {/* AI Insight Box */}
+            {(aiInsight || isAiLoading) && (
+              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-teal-500/10 to-blue-600/10 border border-teal-200 dark:border-teal-800">
+                <h3 className="flex items-center gap-2 text-sm font-bold text-teal-700 dark:text-teal-300 mb-2 uppercase tracking-wider">
+                  <Sparkles size={16} />
+                  AI Insight
+                </h3>
+                {isAiLoading ? (
+                  <div className="h-4 w-3/4 bg-base-300 animate-pulse rounded"></div>
+                ) : (
+                  <div className="text-sm text-base-content/80 leading-relaxed">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                        ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-2 space-y-1" {...props} />,
+                        li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                        strong: ({ node, ...props }) => <strong className="font-bold text-teal-800 dark:text-teal-400" {...props} />,
+                      }}
+                    >
+                      {aiInsight}
+                    </ReactMarkdown>
+                  </div>
+                )}
+              </div>
+            )}
             {/* Results Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
@@ -266,7 +355,7 @@ function SearchPageContent() {
                   ))}
               </div>
             ) : error ? (
-              <EmptyState type="error" onRetry={() => fetchResults(page)} />
+              <EmptyState type="error" onRetry={() => fetchResults()} />
             ) : results.length === 0 ? (
               <EmptyState
                 type={query ? "no-results" : "empty"}

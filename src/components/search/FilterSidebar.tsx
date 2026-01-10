@@ -440,47 +440,7 @@ export default function FilterSidebar({
                 </div>
             </div>
 
-            <style jsx global>{`
-        /* Standard range slider resets 
-          Crucially: pointer-events: none on the input, 
-          but pointer-events: auto on the thumb.
-          This allows clicks to pass through the invisible track.
-        */
-        .range-input {
-          -webkit-appearance: none;
-          appearance: none;
-          background: transparent;
-          pointer-events: none; 
-        }
 
-        /* Webkit Thumb */
-        .range-input::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          pointer-events: auto; /* Re-enable clicks */
-          cursor: pointer;
-          height: 20px; /* Match container height for ease of grabbing */
-          width: 20px;
-          background: transparent; /* Invisible, relying on the visual divs */
-          border-radius: 50%;
-        }
-
-        /* Firefox Thumb */
-        .range-input::-moz-range-thumb {
-          pointer-events: auto;
-          cursor: pointer;
-          height: 20px;
-          width: 20px;
-          background: transparent;
-          border: none;
-          border-radius: 50%;
-        }
-
-        /* Remove default focus outlines */
-        .range-input:focus {
-          outline: none;
-        }
-      `}</style>
         </aside>
     );
 }

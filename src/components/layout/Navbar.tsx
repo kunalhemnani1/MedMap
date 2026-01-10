@@ -19,12 +19,11 @@ import {
     Building2,
 } from "lucide-react";
 
-interface NavbarProps {
-    theme: string;
-    onToggleTheme: () => void;
-}
+import { useTheme } from "@/components/providers/ThemeProvider";
 
-export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
+export default function Navbar() {
+    const { theme, toggleTheme } = useTheme();
+    const onToggleTheme = toggleTheme;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [productsOpen, setProductsOpen] = useState(false);
     const [resourcesOpen, setResourcesOpen] = useState(false);

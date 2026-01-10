@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -33,28 +33,7 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
-  const [theme, setTheme] = useState("light");
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
-
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-    if (initialTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,11 +44,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
-      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <HealthcareBg theme={theme} />
+        <HealthcareBg />
 
         <div className="relative z-10 w-full max-w-5xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 badge badge-lg badge-outline mb-6 p-4 bg-base-100/50 backdrop-blur-sm">

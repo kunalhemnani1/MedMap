@@ -2,11 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
+import { useTheme } from "@/components/providers/ThemeProvider";
+
 interface HealthcareBgProps {
-    theme?: string;
     className?: string;
 }
-
 // SVG path data for medical icons (clean, recognizable shapes)
 const ICONS = {
     // Heart with pulse line
@@ -29,9 +29,9 @@ const ICONS = {
 };
 
 export function HealthcareBg({
-    theme = "light",
     className = "",
 }: HealthcareBgProps) {
+    const { theme } = useTheme();
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {

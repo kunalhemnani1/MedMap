@@ -1,0 +1,14 @@
+{
+    "date": "2026-01-10",
+    "currentIndex": 0,
+    "usage": {
+        "key1": {
+            "model1": 0,
+            "model2": 0
+        },
+        "key2": {
+            "model1": 0,
+            "model2": 0
+        }
+    }
+}
