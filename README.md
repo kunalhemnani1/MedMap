@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MedMap 🏥
 
-## Getting Started
+**MedMap** is an intelligent hospital discovery platform that bridges the gap between traditional directory search and AI-powered medical assistance. It helps users find the right healthcare facility not just by keywords, but by understanding their medical context.
 
-First, run the development server:
+## 🚀 The Problem
+
+Finding the right hospital is often stressful and fragmented:
+
+* **Information Overload**: Users get lists of hospitals but lack specific answers (e.g., "Which one is best for cardiac surgery under ₹5L?").
+* **Medical Jargon**: Patients search for symptoms ("keyhole surgery") but databases list technical terms ("laparoscopic appendectomy"), leading to zero results.
+* **Lack of Context**: Standard maps/search engines don't answer comparative questions or provide price estimates upfront.
+
+## 💡 Our Innovation: Context-Aware AI Search
+
+MedMap isn't just a database; it's a **Search-Augmented Generation (SAG)** engine for healthcare.
+
+1. **Context-Aware AI Insight**: Unlike standard chatbots, our AI doesn't just "guess". It "sees" the exact search results you are looking at (filtered by location, price, etc.) and generates insights based on *that* specific data.
+    * *User*: "Summarize the costs." -> *AI*: Analyzes the 5 hospitals on screen and gives a comparative price breakdown.
+2. **Hybrid Interface**: We combine the precision of structured filters (Distance, Price, Accreditation) with the flexibility of natural language AI.
+3. **Smart Metadata**: We enrich standard hospital data with derived insights (approximate pricing, ratings, insurance availability) to give users a complete picture instantly.
+
+## ✨ Key Features
+
+* **Advanced Search**: Fuse.js powered fuzzy search handling typos and broad queries.
+* **AI Insight Box**: Real-time AI summaries appearing above search results interactively.
+* **Smart Filters**: Filter by procedure cost, distance, NABH accreditation, and insurance availability.
+* **Medical Chatbot**: A dedicated assistant for general medical queries, powered by Gemini 2.5 Flash Lite.
+
+## 🛠️ Tech Stack
+
+* **Framework**: Next.js 15 (App Router)
+* **AI**: Google Gemini 2.5 Flash Lite
+* **Styling**: Tailwind CSS + DaisyUI + Lucide Icons
+* **Search**: Fuse.js (Client-side fuzzy search)
+* **Database**: Firebase Firestore / Local JSON (Hybrid support)
+
+## ⚡ Getting Started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Run development server
 pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
