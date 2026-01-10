@@ -1,29 +1,50 @@
 "use client";
-import { AuroraText } from '@/components/ui/aurora-text';
-import { FlickeringGrid } from '@/components/ui/flickering-grid';
-import React, { useCallback, useState, useEffect, useEffectEvent } from 'react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import {
+  Search,
+  BadgeCheck,
+  TrendingDown,
+  Building2,
+  Star,
+  ArrowRight,
+  Sparkles,
+  Shield,
+  Clock,
+  Stethoscope,
+  Microscope,
+  Syringe,
+  Baby,
+  HeartPulse,
+  Smile,
+} from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { HealthcareBg } from "@/components/ui/healthcare-bg";
+import StatCard from "@/components/cards/StatCard";
+
+const CATEGORIES = [
+  { name: "Diagnostic", icon: Microscope, color: "text-blue-500" },
+  { name: "Surgical", icon: Syringe, color: "text-red-500" },
+  { name: "Dental", icon: Smile, color: "text-green-500" },
+  { name: "Maternity", icon: Baby, color: "text-pink-500" },
+  { name: "Emergency", icon: HeartPulse, color: "text-orange-500" },
+  { name: "Wellness", icon: Stethoscope, color: "text-teal-500" },
+];
 
 export default function Home() {
   const [theme, setTheme] = useState("light");
-  const setThemeEvent = useEffectEvent((theme: string) => { setTheme(theme) });
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Check initial preference or local storage
     const storedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
 
-    if (storedTheme) {
-      setThemeEvent(storedTheme);
-      document.documentElement.setAttribute('data-theme', storedTheme);
-      if (storedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    } else if (prefersDark) {
-      setThemeEvent("dark");
-      document.documentElement.setAttribute('data-theme', "dark");
-      document.documentElement.classList.add('dark');
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+    if (initialTheme === "dark") {
+      document.documentElement.classList.add("dark");
     }
   }, []);
 
@@ -31,245 +52,291 @@ export default function Home() {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    document.documentElement.setAttribute("data-theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(searchTerm.trim())}`;
     }
   };
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col font-sans">
-      {/* Navbar */}
-      <div className="navbar bg-base-100 shadow-sm px-4 md:px-8 z-50 sticky top-0 backdrop-blur-md bg-opacity-90">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden pb-1">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
-            </div>
-            <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow bg-base-100 rounded-box w-52">
-              <li>
-                <a>Products</a>
-                <ul className="p-2">
-                  <li><a>Price Search</a></li>
-                  <li><a>Quality Compare</a></li>
-                </ul>
-              </li>
-              <li>
-                <a>Resources</a>
-                <ul className="p-2">
-                  <li><a>Patient Stories</a></li>
-                  <li><a>Blog</a></li>
-                </ul>
-              </li>
-              <li><a>About Us</a></li>
-            </ul>
-          </div>
-          <a className="btn btn-ghost text-2xl font-bold text-primary tracking-tight">MedMap<span className="text-secondary text-sm self-end mb-1">.io</span></a>
-        </div>
-
-        {/* Center Navbar Dropdowns */}
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 font-medium gap-8">
-            <li>
-              <div className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="m-1 text-base">Products</div>
-                <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200">
-                  <li><a>Price Search</a></li>
-                  <li><a>Quality Data</a></li>
-                  <li><a>Insurance Checker</a></li>
-                </ul>
-              </div>
-            </li>
-            <li>
-              <div className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="m-1 text-base">Resources</div>
-                <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200">
-                  <li><a>Patient Stories</a></li>
-                  <li><a>Market Insights</a></li>
-                  <li><a>Provider Portal</a></li>
-                </ul>
-              </div>
-            </li>
-            <li className="flex items-center"><a className="h-full flex items-center text-base">Enterprise</a></li>
-          </ul>
-        </div>
-
-        <div className="navbar-end gap-4">
-          {/* Theme Toggle */}
-          <label className="swap swap-rotate btn btn-ghost btn-circle">
-            {/* controlled checkbox */}
-            <input
-              type="checkbox"
-              onChange={toggleTheme}
-              checked={theme === "dark"}
-            />
-
-            {/* sun icon */}
-            <svg className="swap-off fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" /></svg>
-
-            {/* moon icon */}
-            <svg className="swap-on fill-current w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" /></svg>
-          </label>
-
-          <select className="select select-bordered select-sm w-full max-w-xs " defaultValue="Mumbai">
-            <option disabled>Select City</option>
-            <option>Mumbai</option>
-            <option>Delhi</option>
-          </select>
-        </div>
-      </div>
+    <div className="min-h-screen bg-base-100 flex flex-col">
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
 
       {/* Hero Section */}
-      <div className="hero min-h-[75vh] bg-base-100 relative overflow-hidden">
-        {/* Background blobs for premium feel */}
-        <FlickeringGrid maxOpacity={0.18} color='blue' squareSize={5} />
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
+        <HealthcareBg theme={theme} />
 
-        <div className="hero-content text-center w-full max-w-5xl z-10 flex flex-col">
-          <div className="w-full">
-            <div className="badge badge-outline badge-primary mb-6 p-4 shadow-sm bg-base-100/50 backdrop-blur-sm">✨ New: AI-Powered Price Predictions</div>
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-              Healthcare Costs, <br />
-              <span className="bg-clip-text text-transparent bg-linear-to-r from-teal-500 to-blue-600">
-                <AuroraText>
-                  Transparent & Fair.
-                </AuroraText>
-              </span>
-            </h1>
-            <p className="py-6 text-xl text-base-content/70 max-w-2xl mx-auto leading-relaxed">
-              Aggregate actual costs for medical procedures across providers in your area (MRI, dental work, surgery).
-              Include insurance compatibility, wait times, and patient outcomes.
-            </p>
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 badge badge-lg badge-outline mb-6 p-4 bg-base-100/50 backdrop-blur-sm">
+            <Sparkles className="w-4 h-4 text-primary" />
+            New: AI-Powered Price Predictions
+          </div>
 
-            {/* Search Bar */}
-            <div className="form-control w-full max-w-3xl mx-auto mt-8 transition-transform hover:scale-[1.01] duration-300">
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Try 'MRI Scan in Bandra' or 'Root Canal'"
-                  className="input input-lg w-full pl-16 pr-32 shadow-xl bg-base-100 border-2 border-base-300 rounded-full focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 h-20 text-lg placeholder-base-content/40"
-                />
-                <button className="btn btn-primary absolute top-2 right-2 rounded-full h-16 w-32 text-lg font-medium shadow-lg hover:shadow-primary/50 border-0  from-primary to-primary/80 z-10 text-primary-content">
-                  Search
-                </button>
-              </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+            Healthcare Costs,
+            <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-500 to-blue-600">
+              Transparent & Fair.
+            </span>
+          </h1>
+
+          <p className="text-xl text-base-content/70 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Compare actual costs for medical procedures across hospitals.
+            Check insurance compatibility, wait times, and patient outcomes.
+          </p>
+
+          {/* Search Bar */}
+          <form
+            onSubmit={handleSearch}
+            className="max-w-3xl mx-auto transition-transform hover:scale-[1.01] duration-300"
+          >
+            <div className="relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-primary z-10" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Try 'MRI Scan in Mumbai' or 'Root Canal'"
+                className="input input-lg w-full pl-16 pr-20 h-20 shadow-xl border-2 border-base-300 rounded-full focus:border-primary focus:ring-4 focus:ring-primary/20 text-lg"
+              />
+              <button
+                type="submit"
+                className="absolute right-4 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-primary text-white flex items-center justify-center shadow-lg"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
             </div>
+          </form>
 
-            <div className="flex gap-4 justify-center mt-8 text-sm text-base-content/50">
-              <span className="flex items-center gap-1">✅ Verified Prices</span>
-              <span className="flex items-center gap-1">⚡ Instant Booking</span>
-              <span className="flex items-center gap-1">🛡️ Insurance Check</span>
-            </div>
+          {/* Trust badges */}
+          <div className="flex flex-wrap gap-4 justify-center mt-10 text-sm">
+            <span className="flex items-center gap-2 bg-base-100/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-success/50">
+              <BadgeCheck className="w-6 h-6 text-success" />
+              <span className="font-medium text-base-content">Verified Prices</span>
+            </span>
+            <span className="flex items-center gap-2 bg-base-100/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-primary/50">
+              <Clock className="w-6 h-6 text-primary" />
+              <span className="font-medium text-base-content">Instant Booking</span>
+            </span>
+            <span className="flex items-center gap-2 bg-base-100/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-blue-500">
+              <Shield className="w-6 h-6 text-blue-500" />
+              <span className="font-medium text-base-content">Insurance Check</span>
+            </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Benefits Section - Zig Zag */}
-      <div className="py-24 px-4 md:px-8 bg-base-200/50">
-        <div className="max-w-6xl mx-auto space-y-24">
-          <div className="text-center mb-16">
+      {/* Categories Section */}
+      <section className="py-20 px-4 md:px-8 bg-base-200/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Browse by Category</h2>
+            <p className="text-base-content/60">
+              Find procedures across major healthcare categories
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {CATEGORIES.map((cat) => (
+              <Link
+                key={cat.name}
+                href={`/categories/${cat.name.toLowerCase()}`}
+                className="card bg-base-100 border border-base-200 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="card-body items-center text-center p-6">
+                  <div
+                    className={`w-14 h-14 rounded-2xl bg-base-200 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ${cat.color}`}
+                  >
+                    <cat.icon className="w-7 h-7" />
+                  </div>
+                  <h3 className="font-medium group-hover:text-primary transition-colors">
+                    {cat.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/categories" className="btn btn-outline gap-2">
+              View All Categories
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-4 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatCard
+              icon={<Building2 className="w-7 h-7 text-primary" />}
+              value="500+"
+              label="Hospitals Listed"
+              trend="+12% this month"
+              trendUp
+            />
+            <StatCard
+              icon={<Stethoscope className="w-7 h-7 text-primary" />}
+              value="10,000+"
+              label="Procedures Compared"
+              trend="+8% this month"
+              trendUp
+            />
+            <StatCard
+              icon={<TrendingDown className="w-7 h-7 text-primary" />}
+              value="₹2Cr+"
+              label="Saved by Users"
+              trend="Avg 35% savings"
+              trendUp
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 md:px-8 bg-base-200/50">
+        <div className="max-w-6xl mx-auto space-y-20">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Why MedMap?</h2>
-            <p className="text-xl text-base-content/60">We bring Clarity into Healthcare.</p>
+            <p className="text-xl text-base-content/60">
+              We bring clarity into healthcare pricing
+            </p>
           </div>
 
-          {/* Feature 1: Right Focused Image */}
+          {/* Feature 1 */}
           <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6 text-left">
-              <div className="w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900 flex items-center justify-center text-3xl">
-                �
+            <div className="flex-1 space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+                <TrendingDown className="w-8 h-8 text-teal-600" />
               </div>
-              <h3 className="text-4xl font-bold">Total Price Transparency</h3>
+              <h3 className="text-3xl font-bold">Total Price Transparency</h3>
               <p className="text-lg text-base-content/70 leading-relaxed">
-                Never get hit with a surprise bill again. We aggregate real billing data to show you the
-                <strong> exact cost</strong> of procedures before you book. Compare cash prices vs insurance rates instantly.
+                Never get hit with a surprise bill again. We aggregate real
+                billing data to show you the{" "}
+                <strong>exact cost</strong> of procedures before you book.
+                Compare cash prices vs insurance rates instantly.
               </p>
-              <button className="btn btn-outline btn-primary">How we gather data</button>
+              <Link href="/search" className="btn btn-outline btn-primary">
+                Start Comparing
+              </Link>
             </div>
-            <div className="flex-1 relative">
-              <div className="absolute inset-0 bg-teal-500/10 rounded-3xl transform rotate-3"></div>
-              <div className="bg-base-100 p-8 rounded-3xl shadow-xl relative border border-base-200 h-80 flex items-center justify-center">
-                {/* Placeholder for UI Image */}
-                <div className="text-center">
-                  <div className="text-5xl mb-4 font-mono font-bold text-teal-600">₹4,500</div>
-                  <div className="text-sm text-gray-500 line-through">avg ₹8,200</div>
-                  <div className="badge badge-success gap-2 mt-4 p-3">
-                    Save 45%
+            <div className="flex-1">
+              <div className="relative">
+                <div className="absolute inset-0 bg-teal-500/10 rounded-3xl rotate-3" />
+                <div className="relative bg-base-100 p-8 rounded-3xl shadow-xl border border-base-200">
+                  <div className="text-center">
+                    <div className="text-5xl font-mono font-bold text-teal-600 mb-2">
+                      ₹4,500
+                    </div>
+                    <div className="text-sm text-base-content/50 line-through">
+                      avg ₹8,200
+                    </div>
+                    <div className="badge badge-success gap-2 mt-4 p-3">
+                      <TrendingDown className="w-4 h-4" />
+                      Save 45%
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Feature 2: Left Focused Image (Zig Zag) */}
+          {/* Feature 2 */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-12">
-            <div className="flex-1 space-y-6 text-left md:text-right">
-              <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-3xl md:ml-auto">
-                ⭐
+            <div className="flex-1 space-y-6 md:text-right">
+              <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center md:ml-auto">
+                <Star className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-4xl font-bold">Quality First</h3>
+              <h3 className="text-3xl font-bold">Quality First</h3>
               <p className="text-lg text-base-content/70 leading-relaxed">
-                Cheap doesn&apos;t mean bad. We rank providers based on <strong>clinical outcomes</strong>, infection rates,
-                and verified patient reviews. Make the best choice for your health, not just your wallet.
+                Cheap doesn&apos;t mean bad. We rank providers based on{" "}
+                <strong>clinical outcomes</strong>, infection rates, and verified
+                patient reviews. Make the best choice for your health.
               </p>
-              <button className="btn btn-outline btn-secondary">View Ranking Methodology</button>
+              <Link href="/insights" className="btn btn-outline btn-secondary">
+                View Methodology
+              </Link>
             </div>
-            <div className="flex-1 relative">
-              <div className="absolute inset-0 bg-blue-500/10 rounded-3xl transform -rotate-3"></div>
-              <div className="bg-base-100 p-8 rounded-3xl shadow-xl relative border border-base-200 h-80 flex flex-col gap-4 justify-center">
-                {/* Placeholder UI */}
-                <div className="flex items-center gap-4 border-b border-base-200 pb-4">
-                  <div className="avatar placeholder">
-                    <div className="bg-neutral text-neutral-content rounded-full w-12">
-                      <span>Dr</span>
+            <div className="flex-1">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500/10 rounded-3xl -rotate-3" />
+                <div className="relative bg-base-100 p-6 rounded-3xl shadow-xl border border-base-200 space-y-4">
+                  <div className="flex items-center gap-4 border-b border-base-200 pb-4">
+                    <div className="avatar">
+                      <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <img
+                          src="/images/doctor.png"
+                          alt="Dr. Sharma portrait"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold">Dr. Sharma</div>
+                      <div className="text-xs text-success">98% Success Rate</div>
+                    </div>
+                    <div className="flex text-warning">
+                      {Array(5)
+                        .fill(0)
+                        .map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
                     </div>
                   </div>
-                  <div>
-                    <div className="font-bold">Dr. Sharma</div>
-                    <div className="text-xs text-success">98% Success Rate</div>
-                  </div>
-                  <div className="ml-auto text-warning">★★★★★</div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="avatar placeholder">
-                    <div className="bg-neutral text-neutral-content rounded-full w-12">
-                      <span>Cl</span>
+                  <div className="flex items-center gap-4">
+                    <div className="avatar">
+                      <div className="w-12 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
+                        <img
+                          src="/images/clinic.png"
+                          alt="City Clinic exterior"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-bold">City Clinic</div>
+                      <div className="text-xs text-success">Top 1% in Mumbai</div>
+                    </div>
+                    <div className="flex text-warning">
+                      {Array(4)
+                        .fill(0)
+                        .map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-current" />
+                        ))}
+                      <Star className="w-4 h-4" />
                     </div>
                   </div>
-                  <div>
-                    <div className="font-bold">City Clinic</div>
-                    <div className="text-xs text-success">Top 1% in Mumbai</div>
-                  </div>
-                  <div className="ml-auto text-warning">★★★★☆</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Feature 3: Right Focused Image */}
+          {/* Feature 3 */}
           <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 space-y-6 text-left">
-              <div className="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-3xl">
-                🛡️
+            <div className="flex-1 space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-purple-600" />
               </div>
-              <h3 className="text-4xl font-bold">Insurance Demystified</h3>
+              <h3 className="text-3xl font-bold">Insurance Demystified</h3>
               <p className="text-lg text-base-content/70 leading-relaxed">
-                Input your policy details and instantly see <strong>in-network</strong> providers.
-                We calculate your estimated copay and deductible usage so you know what you&apos;ll owe.
+                Input your policy details and instantly see{" "}
+                <strong>in-network</strong> providers. We calculate your
+                estimated copay and deductible usage so you know what you&apos;ll owe.
               </p>
-              <button className="btn btn-outline btn-accent">Check Coverage</button>
+              <Link href="/insurance-checker" className="btn btn-outline btn-accent">
+                Check Coverage
+              </Link>
             </div>
-            <div className="flex-1 relative">
-              <div className="absolute inset-0 bg-purple-500/10 rounded-3xl transform rotate-3"></div>
-              <div className="bg-base-100 p-8 rounded-3xl shadow-xl relative border border-base-200 h-80 flex items-center justify-center">
-                <div className="w-full space-y-4">
+            <div className="flex-1">
+              <div className="relative">
+                <div className="absolute inset-0 bg-purple-500/10 rounded-3xl rotate-3" />
+                <div className="relative bg-base-100 p-6 rounded-3xl shadow-xl border border-base-200 space-y-3">
                   <div className="flex justify-between items-center bg-base-200 p-3 rounded-lg">
                     <span>Bajaj Allianz</span>
                     <span className="badge badge-success">Covered</span>
@@ -287,21 +354,31 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="footer footer-center p-10 bg-base-300 text-base-content rounded-t-3xl mt-auto">
-        <aside>
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-5xl filter drop-shadow-lg">🩺</span>
-          </div>
-          <p className="font-bold text-lg">
-            MedMap Healthcare Ltd. <br />
-            <span className="font-normal text-base-content/60">Democratizing healthcare access in India.</span>
+      {/* CTA Section */}
+      <section className="py-20 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-6">
+            Ready to find the best healthcare value?
+          </h2>
+          <p className="text-xl text-base-content/60 mb-8">
+            Join thousands of patients who saved money without compromising on
+            quality care.
           </p>
-          <p className="text-sm mt-2">Copyright © 2024 - MedMap Inc.</p>
-        </aside>
-      </footer>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/search" className="btn btn-primary btn-lg">
+              Start Searching
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/categories" className="btn btn-outline btn-lg">
+              Browse Categories
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
